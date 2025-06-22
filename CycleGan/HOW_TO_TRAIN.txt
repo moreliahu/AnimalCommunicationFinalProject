@@ -1,0 +1,58 @@
+📄 How to Train CycleGAN on Audio Spectrograms
+
+This guide describes how to run the `train_spec.py` script to train a CycleGAN model for audio-to-audio translation using spectrograms.
+
+---
+
+🔧 Prerequisites
+
+Make sure you have:
+- Installed all required Python packages (`torch`, `librosa`, `numpy`, etc.)
+- Preprocessed your dataset into `.npy` spectrogram files
+- Organized the dataset folder as follows:
+  ~/your_dataset/
+  ├── trainA/
+  │   ├── file1.npy
+  │   ├── file2.npy
+  └── trainB/
+      ├── file1.npy
+      ├── file2.npy
+
+💡 NOTE: Replace `your_dataset`, `your_model_name`, and `gpu_ids` with values specific to your project.
+
+---
+
+▶️ Example Command to Start Training
+
+```bash
+python train_spec.py \
+  --dataroot ~/your_dataset \
+  --name your_model_name \
+  --model cycle_gan \
+  --gpu_ids 0 \
+  --dataset_mode unaligned_spec \
+  --serial_batches
+```
+
+---
+
+🧾 Description of Arguments
+
+| Argument            | Description                                                                 |
+|---------------------|-----------------------------------------------------------------------------|
+| `--dataroot`        | Path to your dataset (must include `trainA/` and `trainB/`)                 |
+| `--name`            | A name for this training run (used for logging and saving checkpoints)      |
+| `--model`           | Model type to use — in this case, `cycle_gan`                               |
+| `--gpu_ids`         | GPU ID to use for training (`-1` means use CPU)                             |
+| `--dataset_mode`    | Should be `unaligned_spec` for `.npy` spectrogram inputs                    |
+| `--serial_batches`  | Prevents shuffling — ensures data from A and B are read in order            |
+
+---
+
+📁 Outputs
+
+After training starts, the model will save outputs (checkpoints, logs, etc.) in:
+
+  ./checkpoints/your_model_name/
+
+These checkpoints can later be used for inference with `test_spec.py`.
