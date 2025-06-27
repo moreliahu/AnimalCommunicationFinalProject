@@ -8,12 +8,14 @@ This repository contains the final project for our research on animal communicat
 
 ```
 AnimalCommunicationFinalProject/
-├── AVES/                  # AVES-based feature extraction and embeddings
-├── CycleGan/              # CycleGAN training & testing for audio-to-audio translation
-├── GAT/                   # Graph Attention Network-related code and experiments
-├── README_feature_analysis.md
+├── AVES/                            # AVES-based feature extraction and embeddings
+├── CycleGan/                        # CycleGAN training & testing for audio-to-audio translation
+├── CycleGAN Tests/                  # Inference, visualization & transformation accuracy tools
+├── CrossSpeciesClustering/         # Cross-species UMAP/t-SNE clustering & evaluation of CycleGAN fakes
+├── GAT/                             # Graph Attention Network-related code and experiments
 ├── Eigenvalue Spectrum and Long-Tail Histogram Analysis.ipynb
-└── README.md              # This file
+├── README_feature_analysis.md
+└── README.md                        # This file
 ```
 
 ---
@@ -21,62 +23,86 @@ AnimalCommunicationFinalProject/
 ## 📚 Components Overview
 
 ### 🔬 `AVES/`
-Contains scripts and pretrained model config for extracting embeddings using the AVES audio encoder. Used for high-level representations of vocalizations.
+Contains scripts and pretrained config files for extracting AVES embeddings. These embeddings provide semantic audio representations for downstream tasks like classification and clustering.
 
-### 🔁 `CycleGan/`
-Includes scripts for training and testing CycleGAN models on spectrogram data to perform domain translation between animal species (e.g., bird → cow). Also includes inference and generation code.
+### ↻ `CycleGan/`
+Contains training scripts, data format examples, and generator/inference logic. Used to translate spectrograms between species (e.g., bird → cow or dog ↔ cat) using CycleGANs.
+
+### 🧪 `CycleGAN Tests/`
+A companion folder for visual and numerical evaluation of CycleGAN outputs. Includes:
+- Side-by-side audio comparisons
+- MSE / Cosine distance evaluation
+- Synthetic spectrogram generation
+
+### 🔍 `CrossSpeciesClustering/`
+**New!** End-to-end pipeline for evaluating CycleGAN-generated fakes:
+- Runs dimensionality reduction via **UMAP** and **t-SNE**
+- Clusters real vs. fake embeddings using KMeans, Spectral, HDBSCAN, and Agglomerative
+- Produces summary plots and tables:
+  - Clustering accuracy (real calls)
+  - GT vs. Fake Overlay Plots (colored, annotated)
+  - Fake classification accuracy under **semantic** (e.g. fakeA ↔ A) and **acoustic** (e.g. fakeA ↔ B) hypotheses
+- Can be used as a sanity check for learned transformation fidelity
+
+> 📌 See the notebook or script in `CrossSpeciesClustering/` for full instructions and visual output samples.
 
 ### 🧠 `GAT/`
-Implements a Graph Attention Network architecture applied to bird vocalization data. This part includes graph-based representations of syllables and classification experiments.
+Graph Attention Network over bird syllables. Includes:
+- Graph construction from MFCC/VAE embeddings
+- Attention-weighted classification
+- Comparison of spectral features vs. deep-learned features in GATs
 
 ### 📊 `README_feature_analysis.md` + Notebook
-Includes analysis tools to:
-- Compute eigenvalues of feature matrices
-- Plot log-log eigenvalue decay
-- Visualize long-tail histograms of matrix values
-
-Useful for comparing structure and compression effects between raw waveform, MFCC, and VAE-encoded features.
+Includes eigenvalue spectrum and histogram tools for analyzing latent space compression and representational decay in:
+- Raw waveform
+- MFCC
+- VAE encodings
 
 ---
 
-## 🚀 How to Get Started
+## 🚀 Getting Started
 
 ### Requirements
-Ensure the following Python packages are installed:
+Install required packages:
 ```bash
-numpy
-matplotlib
-librosa
-torch
-torchaudio
-scikit-learn
-networkx
+pip install numpy matplotlib librosa torch torchaudio scikit-learn networkx umap-learn hdbscan seaborn
 ```
 
-### Run AVES Feature Extraction
-See scripts inside the `AVES/` directory for details on how to extract embeddings per file using the AVES model.
-
-### Train CycleGAN
-Inside `CycleGan/`, use the following command:
+### AVES Feature Extraction
 ```bash
-python train_spec.py --dataroot <path_to_data> --name <model_name> --model cycle_gan --gpu_ids <id> --dataset_mode unaligned_spec --serial_batches
+cd AVES/
+# Run embedding script on a folder of `.wav` files
+python extract_embeddings.py --input_dir data/bird --output_dir saved_features/
 ```
 
-See the `HOW_TO_TRAIN.txt` for a full explanation of parameters.
+### CycleGAN Training
+```bash
+cd CycleGan/
+python train_spec.py --dataroot data/ --name bird2cow_model --model cycle_gan --dataset_mode unaligned_spec
+```
 
-### Run Eigenvalue & Histogram Analysis
-Use the script `feature_analysis.py` or the Jupyter Notebook to visualize feature structure.
+### Cross-Species Clustering Analysis
+```bash
+cd CrossSpeciesClustering/
+python analyze_clustering.py
+```
+
+- Outputs include:
+  - UMAP/t-SNE plots of real calls
+  - Clustered results by algorithm
+  - Overlay of real & fakes with accuracy annotations
+  - Summary table for fake calls under both semantic and acoustic similarity goals
 
 ---
 
-## 👩‍🔬 Authors
+## 👩‍💻 Authors
 
-Mor Eliahu & Emily Smetanov  
-Supervised by Khen Cohen  
-In collaboration with Prof. Yossi Yovel's lab at Tel Aviv University
+**Mor Eliahu & Emily Smetanov**  
+Supervised by **Khen Cohen**  
+In collaboration with **Prof. Yossi Yovel**, Tel Aviv University
 
 ---
 
 ## 📄 License
 
-This project is for academic and research use only.
+This project is for academic and non-commercial research purposes only.
