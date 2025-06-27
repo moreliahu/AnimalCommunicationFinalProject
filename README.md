@@ -11,7 +11,6 @@ AnimalCommunicationFinalProject/
 ├── AVES/                            # AVES-based feature extraction and embeddings
 ├── CycleGan/                        # CycleGAN training & testing for audio-to-audio translation
 ├── CycleGAN Tests/                  # Inference, visualization & transformation accuracy tools
-├── CrossSpeciesClustering/         # Cross-species UMAP/t-SNE clustering & evaluation of CycleGAN fakes
 ├── GAT/                             # Graph Attention Network-related code and experiments
 ├── Eigenvalue Spectrum and Long-Tail Histogram Analysis.ipynb
 ├── README_feature_analysis.md
@@ -33,20 +32,18 @@ A companion folder for visual and numerical evaluation of CycleGAN outputs. Incl
 - Side-by-side audio comparisons
 - MSE / Cosine distance evaluation
 - Synthetic spectrogram generation
+- Full pipeline for evaluating CycleGAN-generated fakes:
+  - Runs dimensionality reduction via **UMAP** and **t-SNE**
+  - Clusters real vs. fake embeddings using KMeans, Spectral, HDBSCAN, and Agglomerative
+  - Produces summary plots and tables:
+    - Clustering accuracy for real-only calls
+    - GT vs. Fake Overlay Plots (colored, annotated)
+    - Fake classification accuracy under:
+      - **Semantic** hypothesis: fakeA ↔ A, fakeB ↔ B
+      - **Acoustic** hypothesis: fakeA ↔ B, fakeB ↔ A
+  - Visualizations include per-zip tables and color-coded species names
 
-### 🔍 `CrossSpeciesClustering/`
-End-to-end pipeline for evaluating CycleGAN-generated fakes:
-- Runs dimensionality reduction via **UMAP** and **t-SNE**
-- Clusters real vs. fake embeddings using KMeans, Spectral, HDBSCAN, and Agglomerative
-- Produces summary plots and tables:
-  - Clustering accuracy for real-only calls
-  - GT vs. Fake Overlay Plots (colored, annotated)
-  - Fake classification accuracy under:
-    - **Semantic** hypothesis: fakeA ↔ A, fakeB ↔ B
-    - **Acoustic** hypothesis: fakeA ↔ B, fakeB ↔ A
-- Visualizations include per-zip tables and color-coded species names
-
-> 📌 See the notebook or script in `CrossSpeciesClustering/` for full instructions and visual output samples.
+> 📌 See the notebook or script in `CycleGAN Tests/` for full instructions and visual output samples.
 
 ### 🧠 `GAT/`
 Graph Attention Network over bird syllables. Includes:
@@ -90,9 +87,9 @@ cd CycleGAN Tests/
 python evaluate_fakes.py --real_dir testA --fake_dir results/modelAtoB
 ```
 
-### Cross-Species Clustering Analysis
+### Clustering & Fake Evaluation
 ```bash
-cd CrossSpeciesClustering/
+cd CycleGAN Tests/
 python analyze_clustering.py
 ```
 
