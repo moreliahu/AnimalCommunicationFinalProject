@@ -35,14 +35,16 @@ A companion folder for visual and numerical evaluation of CycleGAN outputs. Incl
 - Synthetic spectrogram generation
 
 ### 🔍 `CrossSpeciesClustering/`
-**New!** End-to-end pipeline for evaluating CycleGAN-generated fakes:
+End-to-end pipeline for evaluating CycleGAN-generated fakes:
 - Runs dimensionality reduction via **UMAP** and **t-SNE**
 - Clusters real vs. fake embeddings using KMeans, Spectral, HDBSCAN, and Agglomerative
 - Produces summary plots and tables:
-  - Clustering accuracy (real calls)
+  - Clustering accuracy for real-only calls
   - GT vs. Fake Overlay Plots (colored, annotated)
-  - Fake classification accuracy under **semantic** (e.g. fakeA ↔ A) and **acoustic** (e.g. fakeA ↔ B) hypotheses
-- Can be used as a sanity check for learned transformation fidelity
+  - Fake classification accuracy under:
+    - **Semantic** hypothesis: fakeA ↔ A, fakeB ↔ B
+    - **Acoustic** hypothesis: fakeA ↔ B, fakeB ↔ A
+- Visualizations include per-zip tables and color-coded species names
 
 > 📌 See the notebook or script in `CrossSpeciesClustering/` for full instructions and visual output samples.
 
@@ -81,6 +83,13 @@ cd CycleGan/
 python train_spec.py --dataroot data/ --name bird2cow_model --model cycle_gan --dataset_mode unaligned_spec
 ```
 
+### CycleGAN Evaluation
+```bash
+cd CycleGAN Tests/
+# Evaluate generated fakes via similarity or metrics
+python evaluate_fakes.py --real_dir testA --fake_dir results/modelAtoB
+```
+
 ### Cross-Species Clustering Analysis
 ```bash
 cd CrossSpeciesClustering/
@@ -91,7 +100,8 @@ python analyze_clustering.py
   - UMAP/t-SNE plots of real calls
   - Clustered results by algorithm
   - Overlay of real & fakes with accuracy annotations
-  - Summary table for fake calls under both semantic and acoustic similarity goals
+  - Summary tables per zip
+  - Accuracy for both **semantic** and **acoustic** hypotheses
 
 ---
 
